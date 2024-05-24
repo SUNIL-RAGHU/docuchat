@@ -6,72 +6,56 @@ function CreateProject() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [pdfFile, setPdfFile] = useState(null);
-
-  // State to track mouse position during dragging
-  const [dragging, setDragging] = useState(false);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-
-  // Function to handle mouse down event
-  const handleMouseDown = (e) => {
-    setDragging(true);
-    setPos({
-      x: e.clientX,
-      y: e.clientY,
-    });
-  };
-
-  // Function to handle mouse move event
-  const handleMouseMove = (e) => {
-    if (dragging) {
-      const dx = e.clientX - pos.x;
-      const dy = e.clientY - pos.y;
-      setPos({ x: e.clientX, y: e.clientY });
-      // Adjust form position based on mouse movement
-      document.getElementById('form-container').style.transform = `translate(${dx}px, ${dy}px)`;
-    }
-  };
-
-  // Function to handle mouse up event
-  const handleMouseUp = () => {
-    setDragging(false);
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('file', pdfFile);
+    formData.append('pdfFile', pdfFile);
 
     try {
-      await axios.post('/api/projects', formData);
+      await axios.post('http://localhost:8000/api/create-project', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       alert('Project created!');
+      setTitle('');
+      setDescription('');
+      setPdfFile(null);
     } catch (err) {
       console.error(err);
-      alert('Failed to create project');
+      setError('Failed to create project. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-black-800 to-indigo-900"
-         onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
-      <div id="form-container" className="bg-gray-300 p-8 rounded-lg shadow-lg"
-           onMouseDown={handleMouseDown}>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-black-800 to-indigo-900">
+      <div className="bg-gray-300 p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Create a New Project 🏆</h2>
+        {error && <p className="text-red-600 mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
-            className="w-full p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent bg-white"
+            className="w-full text-black p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent bg-white"
             required
           />
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
-            className="w-full p-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent h-32 resize-none bg-white"
+            className="w-full p-3 text-black rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent h-32 resize-none bg-white"
             required
           />
           <input
@@ -84,8 +68,9 @@ function CreateProject() {
           <button
             type="submit"
             className="w-full bg-black text-white py-3 rounded-lg shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white"
-            >
-            Create Project
+            disabled={loading}
+          >
+            {loading ? 'Creating...' : 'Create Project'}
           </button>
         </form>
         <div className="mt-4 text-center">

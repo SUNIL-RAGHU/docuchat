@@ -1,15 +1,14 @@
 const express = require('express');
+const multer = require('multer');
+const createProjectController = require('./controllers/projectController');
+
 const app = express();
-const projectController = require('./controllers/projectController');
-const errorHandler = require('./middlewares/errorHandler');
 
-// Middlewares
-app.use(express.json());
+const upload = multer();
 
-// Routes
-app.use('/api/projects', projectController);
+app.post('/api/create-project', upload.single('pdfFile'), createProjectController.createProject);
 
-// Error handler
-app.use(errorHandler);
-
-module.exports = app;
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
