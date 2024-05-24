@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/postgresConfig');
+const sequelize = require('../config/database');
 
 const Project = sequelize.define('Project', {
   title: {
@@ -10,17 +10,18 @@ const Project = sequelize.define('Project', {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  pdfUrl: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  status: {
+  fileURL: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   vectorEmbeddings: {
-    type: DataTypes.JSONB, // Assuming vector embeddings are stored as JSONB
+    type: DataTypes.JSONB,
     allowNull: true,
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'creating',
   },
 });
 
