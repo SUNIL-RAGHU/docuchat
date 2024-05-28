@@ -4,38 +4,22 @@ services:
   app:
     build: .
     ports:
-      - "8000:8000"
+      - "8000:3000"
     environment:
-      - PG_HOST=postgres
-      - PG_PORT=5432
+      - PORT=3000
       - PG_USERNAME=postgres
       - PG_PASSWORD=mysecretpassword
       - PG_DATABASE=postgres
-      - DB_DIALECT=postgres
-      - DB_LOGGING=false
-      - FIREBASE_API_KEY=AIzaSyB8vse6kpiwrl_HxeH8kyfRvPagCk1qEgo
-      - FIREBASE_AUTH_DOMAIN=docuchat-f3f83.firebaseapp.com
-      - FIREBASE_PROJECT_ID=docuchat-f3f83
-      - FIREBASE_STORAGE_BUCKET=docuchat-f3f83.appspot.com
-      - FIREBASE_MESSAGING_SENDER_ID=801561542423
-      - FIREBASE_APP_ID=1:801561542423:web:032802ad4175fb28aac152
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - COHERE_API_KEY=4P9g9vuj8X8VrOkYbVa70o9eDMBOsBxuQIGLNfEU
+      - PG_HOST=db
+      - PG_PORT=5432
     depends_on:
-      - postgres
-      - redis
+      - db
 
-  postgres:
-    image: postgres:13
+  db:
+    image: postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
-
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
