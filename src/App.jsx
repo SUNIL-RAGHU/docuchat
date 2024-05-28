@@ -1,6 +1,5 @@
-// App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import CreateProject from './components/CreateProject';
 import Dashboard from './components/Dashboard';
 import Chat from './components/Chat';
@@ -13,11 +12,11 @@ function App() {
           {/* Define routes using Routes component */}
           <Routes>
             {/* Route for Dashboard component */}
-            <Route path="/" element={<Dashboard />} exact />
+            <Route path="/" element={<Dashboard />} />
             {/* Route for CreateProject component */}
             <Route path="/create" element={<CreateProject />} />
-            {/* Route for Chat component with dynamic ID */}
-            <Route path="/chat/" element={<Chat />} />
+            {/* Route for Chat component */}
+            <Route path="/chat/:id" element={<Chat />} />
           </Routes>
         </main>
       </div>

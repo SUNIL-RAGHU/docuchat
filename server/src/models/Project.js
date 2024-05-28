@@ -14,10 +14,6 @@ const Project = sequelize.define('Project', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  vectorEmbeddings: {
-    type: DataTypes.JSONB,
-    allowNull: true,
-  },
   status: {
     type: DataTypes.STRING,
     allowNull: false,

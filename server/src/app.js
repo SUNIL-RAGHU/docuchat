@@ -1,35 +1,34 @@
-// const express = require('express');
-// const multer = require('multer');
-// const createProjectController = require('./controllers/projectController');
-
-// const app = express();
-
-// const upload = multer();
-
-// app.post('/api/create-project', upload.single('pdfFile'), createProjectController.createProject);
-
-// const PORT = process.env.PORT || 8000;
-// app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-// });
-
 const express = require('express');
 const multer = require('multer');
 const createProjectController = require('./controllers/projectController');
-const sequelize = require('./config/database'); // Import the Sequelize instance
-
+const dashboardProjectController = require('./controllers/dashboardController');
+const chatProjectController = require('./controllers/chatController');
+const sequelize = require('./config/database');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+require('dotenv').config();
 const app = express();
-const upload = multer();
+const router = express.Router(); // No need to define a separate router instance
 
-app.post('/api/create-project', upload.single('pdfFile'), createProjectController.createProject);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
-// Sync the Sequelize models with the database
-sequelize
-  .sync()
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Define your routes
+router.post('/api/create-project', upload.single('pdfFile'), createProjectController.createProject);
+
+router.get('/api/projects', dashboardProjectController.dashboardProject);
+
+router.post('/api/chat/:id', chatProjectController.chatProject);
+
+// Mount the router at the base URL
+app.use('/', router);
+
+sequelize.sync()
   .then(() => {
     console.log('Database synced successfully');
-
-    // Start the server after syncing the models
     const PORT = process.env.PORT || 8000;
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

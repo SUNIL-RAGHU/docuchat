@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import ResponseMessage from './ResponseMessage';
 
 function Chat() {
   const { id } = useParams();
@@ -20,39 +21,56 @@ function Chat() {
   }, [messages]);
 
   const sendMessage = async () => {
-    // Send a dummy response after a short delay
-    const dummyResponse = "This is a dummy response from ChatGPT.";
-    // Add the user's message to the messages array
-    setMessages([...messages, { user: 'You', message: input }]);
-    // Insert the dummy response before the user's message
-    setMessages([{ user: 'ChatGPT', message: dummyResponse }, ...messages]);
+    if (!input.trim()) {
+      return;
+    }
+
+    // Send the user's message to the server
+    try {
+      const url = `http://localhost:8000/api/chat/${id}`;
+      const response = await axios.post(url, { message: input });
+      // Handle response
+      const responseData = response.data;
+      const serverResponse = responseData.message;
+      setMessages([...messages, { user: 'Question', message: input }, { user: 'Answer', message: serverResponse }]);
+    } catch (error) {
+      // Handle error
+      console.error('Error sending message:', error);
+    }
+
     // Clear the input field
     setInput('');
   };
 
   return (
     <div className="relative">
-     <div className="mt-4 text-left">
-          <Link
-            to="/"
-            className="bg-gray-500 text-white p-3 rounded-l-lg hover:bg-gray-700"
-          >
-            👈  HomePage
-          </Link>
-        </div>
-      <div className="max-w-4xl mx-auto pb-16"> 
+      <div className="mt-4 text-left">
+        <Link
+          to="/"
+          className="bg-gray-500 text-white p-3 rounded-l-lg hover:bg-gray-700"
+        >
+          👈  HomePage
+        </Link>
+      </div>
+      <div className="max-w-4xl mx-auto pb-16">
         <div className="space-y-10">
           {messages.map((msg, index) => (
-            <div key={index} className={`flex flex-col p-6 bg-gray-200 rounded-lg`}>
-              <div className="flex flex-row ">
-                <span className="text-black">{msg.message}</span>
-              </div>
+            <div key={index}>
+              {msg.user === 'Question' ? (
+                <div className={`flex flex-col p-6 bg-gray-200 rounded-lg`}>
+                  <div className="flex flex-row ">
+                    <span className="text-black">{msg.user}: {msg.message}</span>
+                  </div>
+                </div>
+              ) : (
+                <ResponseMessage key={index} message={msg.message} />
+              )}
             </div>
           ))}
           <div ref={messagesEndRef} />
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 right-0  shadow-md p-4"> {/* Changed to bg-white for better contrast */}
+      <div className="fixed bottom-0 left-0 right-0  shadow-md p-4">
         <div className="max-w-4xl mx-auto flex flex-row">
           <input
             type="text"

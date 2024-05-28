@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function CreateProject() {
   const [title, setTitle] = useState('');
@@ -8,6 +8,7 @@ function CreateProject() {
   const [pdfFile, setPdfFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,15 +21,19 @@ function CreateProject() {
     formData.append('pdfFile', pdfFile);
 
     try {
-      await axios.post('http://localhost:8000/api/create-project', formData, {
+      const response = await axios.post('http://localhost:8000/api/create-project', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
+
+      console.log('Response data:', response.data); // Log the response data
+
       alert('Project created!');
       setTitle('');
       setDescription('');
       setPdfFile(null);
+      navigate('/'); // Redirect to the dashboard page
     } catch (err) {
       console.error(err);
       setError('Failed to create project. Please try again.');
@@ -74,7 +79,9 @@ function CreateProject() {
           </button>
         </form>
         <div className="mt-4 text-center">
-          <Link to="/" className="text-blue-600 hover:underline">Back</Link>
+          <Link to="/" className="text-blue-600 hover:underline">
+            Back
+          </Link>
         </div>
       </div>
     </div>
