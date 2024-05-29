@@ -1,70 +1,106 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# **DocuChat**
 
-In the project directory, you can run:
+DocuChat is a full-stack application for uploading PDF files, processing their content into vector embeddings, and interacting with the content through a chat interface.
 
-### `npm start`
+## **Features**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Project Creation**: Upload PDF files with title and description.
+- **PDF Processing**: Backend processes PDFs to generate vector embeddings.
+- **Dashboard**: View project statuses: 'creating', 'failed', 'created'.
+- **Chat Interface**: Ask questions and get answers based on PDF content.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## **Tech Stack**
 
-### `npm test`
+- **Frontend**: React.js
+- **Backend**: Node.js, Express.js
+- **Database**: PostgreSQL
+- **Worker Queue**: BullMQ
+- **Vector Embeddings**: cohere
+- **Cloud Storage**:Firebase
+- **Containerization**: Docker
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## **Getting Started**
 
-### `npm run build`
+### **Prerequisites**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js
+- Docker
+- Firebase
+- PostgreSQL instance
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### **Setup Instructions**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### **Frontend**
 
-### `npm run eject`
+1. Navigate to the **`client`** directory:
+    
+    ```bash
+    
+    cd docuchat
+    
+    ```
+    
+2. Install dependencies:
+    
+    ```bash
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    npm install
+    
+    ```
+    
+3. Start the frontend:
+    
+    ```bash
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    npm start
+    
+    ```
+    
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### **Backend**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Build the Docker image:
+    
+    ```bash
 
-## Learn More
+    cd docuchat/server
+    docker build -t docuchat-backend .
+    
+    ```
+    
+2. Create a **`.env`** file in the **`backend`** directory:
+    
+    ```
+    # PostgreSQL
+    PG_USERNAME=postgres
+    PG_PASSWORD=mysecretpassword
+    PG_DATABASE=postgres
+    PG_HOST=db
+    PG_PORT=5432
+    
+    # Firebase
+    FIREBASE_API_KEY=your_firebase_api_key
+    FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+    FIREBASE_PROJECT_ID=your_firebase_project_id
+    FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+    FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+    FIREBASE_APP_ID=your_firebase_app_id
+    
+    # CoHere API Key
+    COHERE_API_KEY=your_cohere_api_key
+    
+    # Application
+    PORT=3000
+    
+    ```
+    
+3. Start the backend and worker with Docker Compose:
+   ```
+    docker-compose up
+    
+    ```
+    
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+##
