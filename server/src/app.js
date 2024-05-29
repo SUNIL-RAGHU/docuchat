@@ -16,6 +16,7 @@ app.use(cors());
 
 const upload = multer({ storage: multer.memoryStorage() });
 
+
 // Define your routes
 router.post('/api/create-project', upload.single('pdfFile'), createProjectController.createProject);
 
@@ -29,10 +30,11 @@ app.use('/', router);
 sequelize.sync()
   .then(() => {
     console.log('Database synced successfully');
-    const PORT = process.env.PORT || 8000;
+    const PORT = process.env.PORT;
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
+    
   })
   .catch((err) => {
     console.error('Error syncing database:', err);

@@ -3,6 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
+    restart: unless-stopped
     ports:
       - "8000:3000"
     environment:
@@ -12,14 +13,26 @@ services:
       - PG_DATABASE=postgres
       - PG_HOST=db
       - PG_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BULL_PREFIX=bull
     depends_on:
+      - redis
       - db
 
   db:
-    image: postgres
+    image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mysecretpassword
       - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    volumes:
+      - $PWD/.volumes/redis/dir:/data
+    ports:
+      - "6379:6379"
